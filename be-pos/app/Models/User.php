@@ -2,44 +2,63 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
+use App\Models\Role;
+use App\Models\Profile;
+use App\Models\OTPCode;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Foundation\Auth\User as Authenticable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    public static function boot() {
+        parent::boot();
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+        static::created(function ($model) {
+            $model->generateOTPCodeData($model);
+        });
+    }
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    public function generateOTPCodeData($user) {
+        $randomNumber = mt_rand(100000, 999999);
+        $now = Carbon::now();
+
+        $otp = OTPCode::updateOrCreate(
+            ['user_id' => $user->user_id],
+            [
+                'otp_code' => $randomNumber,
+                'valid_until' => $now->addMinutes(5),
+            ]
+        );
+    }
+
+    protected $primaryKey = 'user_id';
+    protected $table = 'users';
+    protected $fillable = ['full_name', 'email', 'password', 'address', 'phone_number','role_id'];
+    protected $hidden = ['password'];
+
+    public function getJWTIdentifier() {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims() {
+        return [];
+    }
+
+    public function profile() {
+        return $this->HasOne(Profile::class, 'user_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function otpCode()
+    {
+        return $this->hasOne(OTPCode::class, 'users_id');
+    }
 }
