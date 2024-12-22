@@ -2,23 +2,22 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Role extends Model
+class ForgotPassword extends Model
 {
     use HasFactory, HasUuids;
-    protected $primaryKey = 'role_id';
-    protected $table = 'roles';
+
+    protected $primaryKey = 'forgot_password_id';
+    protected $table = 'forgot_passwords';
 
     protected $fillable = [
-        'role_name',
+        'token',
+        'user_id',
+        'valid_until',
     ];
 
-    public function list_user()
-    {
-        return $this->hasMany(User::class, 'role_id', 'role_id');
-    }
+    public $timestamps = false;
 }

@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Models\Invoice;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class InvoiceDetail extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     protected $primaryKey = 'invoice_detail_id';
     protected $table = 'invoice_details';

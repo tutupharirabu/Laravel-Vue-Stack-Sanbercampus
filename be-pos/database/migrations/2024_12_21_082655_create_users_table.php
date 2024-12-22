@@ -16,11 +16,13 @@ return new class extends Migration
             $table->string('full_name')->NotNull();
             $table->string('email')->unique()->NotNull();
             $table->string('password')->NotNull();
-            $table->string('address')->NotNull();
+            $table->string('address')->nullable();
             $table->string('phone_number')->unique()->NotNull();
             $table->timestamp('email_verified_at')->nullable();
             $table->uuid('role_id')->NotNull();
+            $table->uuid('business_id')->nullable();
             $table->foreign('role_id')->references('role_id')->on('roles');
+            $table->foreign('business_id')->references('business_id')->on('businesses');
             $table->timestamps();
         });
     }
