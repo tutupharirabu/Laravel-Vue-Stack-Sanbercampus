@@ -1,6 +1,6 @@
 {
   "name": "fe-pos",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.9",
+    "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.2.6",
     "vue": "^3.5.13",
     "vue-router": "^4.4.5"

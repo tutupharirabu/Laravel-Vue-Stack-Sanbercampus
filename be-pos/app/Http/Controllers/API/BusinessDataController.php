@@ -25,6 +25,12 @@ class BusinessDataController extends Controller
         // Ambil user yang sedang login
         $user = Auth::guard('api')->user();
 
+        if (!$user) {
+            return response()->json([
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
         // Validasi role user (hanya Owner yang dapat membuat bisnis)
         if (!in_array($user->role->role_name, ['owner'])) {
             return response()->json([

@@ -166,6 +166,52 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // public function loginv2(Request $request)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'email' => 'required|email|max:255',
+    //         'password' => 'required',
+    //         'role' => 'required',
+    //     ]);
+
+    //     // Ambil kredensial kecuali role
+    //     $credentials = $request->only('email', 'password');
+
+    //     // Coba login dengan kredensial
+    //     if (!$token = Auth::guard('api')->attempt($credentials)) {
+    //         return response()->json([
+    //             'error' => 'Unauthorized',
+    //             'message' => 'Email atau password salah.',
+    //         ], 401);
+    //     }
+
+    //     // Ambil data pengguna
+    //     $user = User::where('email', $request->email)
+    //         ->with('role') // Eager load role untuk menghindari query tambahan
+    //         ->first();
+
+    //     // Verifikasi apakah role yang dipilih cocok dengan role user
+    //     if (!$user->role || strtolower($user->role->role_name) !== strtolower($request->role)) {
+    //         return response()->json([
+    //             'error' => 'Unauthorized',
+    //             'message' => 'Role yang dipilih tidak sesuai.',
+    //         ], 403);
+    //     }
+
+    //     // Berikan respons login berhasil
+    //     return response()->json([
+    //         "message" => "Login berhasil!",
+    //         "user" => [
+    //             "id" => $user->user_id,
+    //             "name" => $user->full_name,
+    //             "email" => $user->email,
+    //             "role" => Str::ucfirst($request->role),
+    //         ],
+    //         "token" => $token,
+    //     ], 200);
+    // }
+
     public function logout()
     {
         try {

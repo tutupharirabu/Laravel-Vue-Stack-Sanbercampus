@@ -22,7 +22,7 @@
         }
 
         .header {
-            background-color: #87CEEB;
+            background-color: #2563eb;
             padding: 20px;
             text-align: center;
             color: white;
@@ -67,7 +67,7 @@
         }
 
         .footer a {
-            color: #87CEEB;
+            color: #2563eb;
             text-decoration: none;
         }
     </style>
@@ -77,7 +77,7 @@
     <div class="email-container">
         <!-- Header -->
         <div class="header">
-            <img src="https://webpos.co.nz/sites/default/files/inline-images/webpos-logo.png"
+            <img src="https://cdn2.f-cdn.com/contestentries/392089/3249793/57192d913e1c7_thumb900.jpg"
                 alt="WebPoS" style="max-width: 100%; height: auto; width: 50px;">
         </div>
 
