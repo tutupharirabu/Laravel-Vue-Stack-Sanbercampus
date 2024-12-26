@@ -59,7 +59,7 @@
         }
 
         .footer {
-            background-color: #2563eb;
+            background-color: #f1f1f1;
             text-align: center;
             padding: 10px;
             font-size: 12px;
@@ -67,7 +67,7 @@
         }
 
         .footer a {
-            color: #87CEEB;
+            color: #2563eb;
             text-decoration: none;
         }
     </style>

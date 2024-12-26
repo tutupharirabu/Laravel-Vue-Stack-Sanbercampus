@@ -74,24 +74,24 @@ const router = createRouter({
       meta: { isAuth: true, isRegister: true },
     },
 
-    // // Forgot Password Routes
-    // {
-    //   path: '/forgot-password',
-    //   name: 'forgotPassword',
-    //   component: () => import('@/views/DashboardPetani/Login-Register/ForgotPassword/ForgotPass.vue'),
-    // },
-    // {
-    //   path: '/forgot-password/verifikasiOTP',
-    //   name: 'OTPForgotPassword',
-    //   component: () => import('@/views/DashboardPetani/Login-Register/ForgotPassword/VerifOTPForgotPass.vue'),
-    //   meta: { forgotPass: true },
-    // },
-    // {
-    //   path: '/forgot-password/resetPassword',
-    //   name: 'ResetPassword',
-    //   component: () => import('@/views/DashboardPetani/Login-Register/ForgotPassword/SubmitPass.vue'),
-    //   meta: { forgotPass: true },
-    // },
+    // Forgot Password Routes
+    {
+      path: '/forgot-password',
+      name: 'forgotPassword',
+      component: () => import('@/views/RegisterLogin/ForgotPassword/SubmitEmail.vue'),
+    },
+    {
+      path: '/verifikasiOTP-forgotPassword',
+      name: 'OTPForgotPassword',
+      component: () => import('@/views/RegisterLogin/ForgotPassword/VerifyOTPForgotPass.vue'),
+      meta: { forgotPass: true },
+    },
+    {
+      path: '/resetPassword',
+      name: 'ResetPassword',
+      component: () => import('@/views/RegisterLogin/ForgotPassword/ForgotPass.vue'),
+      meta: { forgotPass: true },
+    },
   ]
 })
 
