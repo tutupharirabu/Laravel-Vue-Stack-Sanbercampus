@@ -279,7 +279,6 @@ const submitForm = async () => {
         });
 
         localStorage.setItem('isSuccessBusiness', 'true');
-        localStorage.setItem('continueToBusiness', 'false');
         isSuccessBusiness.value = true;
         continueToBusiness.value = false;
     } catch (error) {
@@ -318,7 +317,6 @@ const continueHandler = () => {
         router.push('#'); // Redirect untuk opsi personal
     } else if (selectedOption.value === 'business') {
         localStorage.setItem('continueToBusiness', 'true');
-        localStorage.setItem('isSuccessOTP', 'false');
         continueToBusiness.value = true;
         isSuccessOTP.value = false;
     }

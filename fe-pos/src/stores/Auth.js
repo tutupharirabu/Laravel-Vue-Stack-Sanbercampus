@@ -30,9 +30,10 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.setItem('token', JSON.stringify(token));
             localStorage.setItem('user', JSON.stringify(user));
 
-            // Redirect berdasarkan role
-            if (user.role === 'Petani') {
-                router.push('/monitoring-arcadia/dashboard');
+            if (currentUser.value.role === 'Owner') {
+                router.push('/chooseRole');
+            } else {
+                router.push('/cashier-dashboard'); // Redirect ke dashboard cashier
             }
         } catch (error) {
             isError.value = true;
@@ -101,7 +102,7 @@ export const useAuthStore = defineStore('auth', () => {
             localStorage.removeItem('token')
             localStorage.removeItem('user')
 
-            router.push('/monitoring-arcadia/login')
+            router.push('/login')
 
         } catch (error) {
             isError.value = true;

@@ -47,6 +47,12 @@ const router = createRouter({
       component: () => import('@/views/RegisterLogin/Login.vue'),
     },
     {
+      path: '/chooseRole',
+      name: 'ChooseRole',
+      component: () => import('@/views/RegisterLogin/ChooseRole.vue'),
+      meta: { isAuth:true, isLogin: true },
+    },
+    {
       path: '/register',
       name: 'Register',
       component: () => import('@/views/RegisterLogin/Register.vue'),
@@ -112,6 +118,16 @@ router.beforeEach((to, from, next) => {
 
     if (!acessedRegister) {
       next({ name: 'Register' });
+      return;
+    }
+  }
+
+  // Cek Halaman Login - Choose Role
+  if (to.meta.isLogin) {
+    const accessedLogin = localStorage.getItem('accessLogin');
+
+    if(!accessedLogin) {
+      next({ name: 'Login' });
       return;
     }
   }

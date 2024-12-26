@@ -23,13 +23,20 @@ Route::prefix('v1')->group(function () {
     // Register - Login
     Route::prefix('auth')->group(function () {
         Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', [AuthController::class, 'login']);
         Route::get('/me', [AuthController::class, 'getUser'])->middleware('auth:api');
         Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
 
         // Generate OTP Code - Verification Email
         Route::post('/generate-otp-code', [AuthController::class, 'generateOtpCode']);
         Route::post('/verification-email', [AuthController::class, 'verificationEmail'])->middleware('auth:api');
+
+        // Generate OTP Code - Verification Login
+        Route::prefix('login')->group(function () {
+            Route::post('/', [AuthController::class, 'login']);
+            Route::post('/cashier', [AuthController::class, 'loginCashier']);
+            Route::post('/generate-otp-code', [AuthController::class, 'generateOtpCodeLogin'])->middleware('auth:api');
+            Route::post('/verification-login', [AuthController::class, 'verificationLogin'])->middleware('auth:api');
+        });
     });
 
     // Business

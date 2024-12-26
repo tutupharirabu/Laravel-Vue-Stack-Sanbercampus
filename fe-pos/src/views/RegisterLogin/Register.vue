@@ -16,6 +16,7 @@ onMounted(() => {
     localStorage.removeItem('continueToBusiness');
     localStorage.removeItem('isSuccessOTP');
     localStorage.removeItem('isSuccessBusiness');
+    localStorage.removeItem('accessLogin');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 });

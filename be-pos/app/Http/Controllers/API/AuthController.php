@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\OTPCode;
+use App\Mail\LoginMailSend;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Mail\RegisterMailSend;
@@ -112,7 +113,7 @@ class AuthController extends Controller
     public function getUser()
     {
         $currentUser = auth()->user();
-        $dataUser = User::with('role', 'profile')->find($currentUser->user_id);
+        $dataUser = User::with('role', 'profile', 'business')->find($currentUser->user_id);
 
         return response()->json([
             'message' => 'Berhasil menampilkan data user!',
@@ -126,7 +127,6 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email|max:255',
             'password' => 'required',
-            'role' => 'required',
         ]);
 
         // Ambil kredensial kecuali role
@@ -135,23 +135,13 @@ class AuthController extends Controller
         // Coba login dengan kredensial
         if (!$token = Auth::guard('api')->attempt($credentials)) {
             return response()->json([
-                'error' => 'Unauthorized',
                 'message' => 'Email atau password salah.',
             ], 401);
         }
 
         // Ambil data pengguna
         $user = User::where('email', $request->email)
-            ->with('role') // Eager load role untuk menghindari query tambahan
             ->first();
-
-        // Verifikasi apakah role yang dipilih cocok dengan role user
-        if (!$user->role || strtolower($user->role->role_name) !== strtolower($request->role)) {
-            return response()->json([
-                'error' => 'Unauthorized',
-                'message' => 'Role yang dipilih tidak sesuai.',
-            ], 403);
-        }
 
         // Berikan respons login berhasil
         return response()->json([
@@ -160,57 +150,94 @@ class AuthController extends Controller
                 "id" => $user->user_id,
                 "name" => $user->full_name,
                 "email" => $user->email,
-                "role" => Str::ucfirst($request->role),
+                "role" => $user->role_id ? Str::ucfirst($user->role->role_name) : 'No Role Assigned',
             ],
             "token" => $token,
         ], 200);
     }
 
-    // public function loginv2(Request $request)
-    // {
-    //     // Validasi input
-    //     $request->validate([
-    //         'email' => 'required|email|max:255',
-    //         'password' => 'required',
-    //         'role' => 'required',
-    //     ]);
+    public function generateOtpCodeLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
 
-    //     // Ambil kredensial kecuali role
-    //     $credentials = $request->only('email', 'password');
+        $user = User::where('email', $request->email)->first();
 
-    //     // Coba login dengan kredensial
-    //     if (!$token = Auth::guard('api')->attempt($credentials)) {
-    //         return response()->json([
-    //             'error' => 'Unauthorized',
-    //             'message' => 'Email atau password salah.',
-    //         ], 401);
-    //     }
+        if (!$user) {
+            return response()->json(['error' => 'Email tidak ditemukan!'], 404);
+        }
 
-    //     // Ambil data pengguna
-    //     $user = User::where('email', $request->email)
-    //         ->with('role') // Eager load role untuk menghindari query tambahan
-    //         ->first();
+        $user->generateOtpCodeData($user);
 
-    //     // Verifikasi apakah role yang dipilih cocok dengan role user
-    //     if (!$user->role || strtolower($user->role->role_name) !== strtolower($request->role)) {
-    //         return response()->json([
-    //             'error' => 'Unauthorized',
-    //             'message' => 'Role yang dipilih tidak sesuai.',
-    //         ], 403);
-    //     }
+        Mail::to($user->email)->send(new LoginMailSend($user));
 
-    //     // Berikan respons login berhasil
-    //     return response()->json([
-    //         "message" => "Login berhasil!",
-    //         "user" => [
-    //             "id" => $user->user_id,
-    //             "name" => $user->full_name,
-    //             "email" => $user->email,
-    //             "role" => Str::ucfirst($request->role),
-    //         ],
-    //         "token" => $token,
-    //     ], 200);
-    // }
+        return response([
+            'message' => "OTP telah dikirim ke email Anda!",
+        ], 200);
+    }
+
+    public function verificationLogin(Request $request)
+    {
+        $request->validate([
+            'otp_code' => 'required|numeric',
+        ]);
+
+        $otp = OTPCode::where('otp_code', $request->otp_code)->first();
+
+        if (!$otp) {
+            return response([
+                "message" => "Gagal verifikasi OTP Login! (OTP Code TIDAK DITEMUKAN)",
+            ], 404);
+        }
+
+        if (Carbon::now() > $otp->valid_until) {
+            return response([
+                "message" => "Gagal verifikasi OTP Login! (OTP Code SUDAH KADALUARSA)",
+            ], 400);
+        }
+
+        $otp->delete();
+
+        return response([
+            "message" => "Berhasil verifikasi OTP Login!",
+        ], 200);
+    }
+
+    public function loginCashier(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email|max:255',
+            'password' => 'required|max:6',
+        ]);
+
+        // Ambil kredensial kecuali role
+        $credentials = $request->only('email', 'password');
+
+        // Coba login dengan kredensial
+        if (!$token = Auth::guard('api')->attempt($credentials)) {
+            return response()->json([
+                'message' => 'Email atau password salah.',
+            ], 401);
+        }
+
+        // Ambil data pengguna
+        $user = User::where('email', $request->email)
+            ->first();
+
+        // Berikan respons login berhasil
+        return response()->json([
+            "message" => "Login berhasil!",
+            "user" => [
+                "id" => $user->user_id,
+                "name" => $user->full_name,
+                "email" => $user->email,
+                "role" => $user->role_id ? Str::ucfirst($user->role->role_name) : 'No Role Assigned',
+            ],
+            "token" => $token,
+        ], 200);
+    }
 
     public function logout()
     {

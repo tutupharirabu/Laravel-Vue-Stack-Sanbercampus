@@ -15,6 +15,7 @@ onMounted(() => {
     localStorage.removeItem('accessRegister');
     localStorage.removeItem('continueToBusiness');
     localStorage.removeItem('isSuccessOTP');
+    localStorage.removeItem('accessLogin');
     localStorage.removeItem('isSuccessBusiness');
     localStorage.removeItem('token');
     localStorage.removeItem('user');

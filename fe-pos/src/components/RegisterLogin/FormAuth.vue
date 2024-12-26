@@ -216,9 +216,16 @@ const handleSubmit = async () => {
     try {
         if (props.isRegister) {
             await registerUser(inputForm);
-            localStorage.setItem('accessRegister', 'true')
+
+            if (authStore.tokenUser) {
+                localStorage.setItem('accessRegister', 'true')
+            }
         } else {
             await loginUser(inputForm);
+
+            if (authStore.tokenUser) {
+                localStorage.setItem('accessLogin', 'true')
+            }
         }
     } catch (error) {
         console.error('Error:', error);
