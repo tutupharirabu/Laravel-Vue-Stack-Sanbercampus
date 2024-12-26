@@ -1,45 +1,42 @@
 import { useAuthStore } from '@/stores/Auth'
 import { createRouter, createWebHistory } from 'vue-router'
 
-// import DashboardLayout from '@/views/DashboardPetani/PetaniLayout.vue'
+import Layout from '@/views/Layout.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Dashboard Petani Routes
-    // {
-    //   path: '/dashboard-PoS',
-    //   component: DashboardLayout,
-    //   meta: { isPetani: true },
-    //   children: [
-    //     {
-    //       path: 'dashboard',
-    //       name: 'HomeDashboardPetani',
-    //       component: () => import('../views/DashboardPetani/DashboardPetani.vue'),
-    //     },
-    //     {
-    //       path: 'device',
-    //       name: 'CekDevicePetani',
-    //       component: () => import('../views/Device/DevicePetani.vue'),
-    //     },
-    //     {
-    //       path: 'device/monitoring/:id',
-    //       name: 'DetailDeviceMonitoring',
-    //       component: () => import('../views/Device/DetailDevice/DetailDeviceMonitoringPetani.vue'),
-    //     },
-    //     {
-    //       path: 'device/watering/:id',
-    //       name: 'DetailDeviceWatering',
-    //       component: () => import('../views/Device/DetailDevice/DetailDeviceWateringPetani.vue'),
-    //     },
-    //     {
-    //       path: "device/update/:id",
-    //       name: "updateDevice",
-    //       component: () => import('../views/Device/DetailDevice/UpdateDetailDevicePetani.vue'),
-    //     },
-    //   ],
-    // },
-
+    // Dashboard Owner/Admin Routes
+    {
+      path: '/',
+      component: Layout,
+      children: [
+        {
+          path: 'dashboard',
+          name: 'DashboardAdminOwner',
+          meta: { isOwner: true },
+          component: () => import('../views/Admin-Owner/Dashboard.vue'),
+        },
+        {
+          path: 'product',
+          name: 'ProductAdminOwner',
+          meta: { isOwner: true },
+          component: () => import('../views/Admin-Owner/Product.vue'),
+        },
+        {
+          path: 'transactions',
+          name: 'TransactionsAdminOwner',
+          meta: { isOwner: true },
+          component: () => import('../views/Admin-Owner/Transactions.vue'),
+        },
+        {
+          path: 'cashier',
+          name: 'Cashier',
+          meta: { isCashier: true },
+          component: () => import('../views/Cashier/Cashier.vue'),
+        }
+      ],
+    },
     // Authentication Routes
     {
       path: '/login',
@@ -50,7 +47,7 @@ const router = createRouter({
       path: '/chooseRole',
       name: 'ChooseRole',
       component: () => import('@/views/RegisterLogin/ChooseRole.vue'),
-      meta: { isAuth:true, isLogin: true },
+      meta: { isAuth: true, isLogin: true },
     },
     {
       path: '/register',
@@ -105,15 +102,22 @@ router.beforeEach((to, from, next) => {
     return; // Pastikan keluar dari fungsi
   }
 
-  // Cek halaman dashboard petani
-  // if (to.meta.isPetani && (!authStore.tokenUser || authStore?.currentUser?.role !== 'Petani')) {
-  //   alert('Kamu tidak punya akses ke halaman dashboard petani ini!');
-  //   next('/beranda');
-  //   return;
-  // }
+  // Cek halaman dashboard OWNER/ADMIN
+  if (to.meta.isOwner && (!authStore.tokenUser || (authStore?.currentUser?.role !== 'Admin' && authStore?.currentUser?.role !== 'Owner'))) {
+    alert('Kamu tidak punya akses ke halaman dashboard Admin/Owner ini!');
+    next('/login');
+    return;
+  }
+
+  // Cek halaman CASHIER
+  if (to.meta.isCashier && (!authStore.tokenUser || authStore?.currentUser?.role !== 'Cashier')) {
+    alert('Kamu tidak punya akses ke halaman dashboard Cashier ini!');
+    next('/login');
+    return;
+  }
 
   // Cek Halaman Verifikasi OTP Email dan Business Information
-  if(to.meta.isRegister) {
+  if (to.meta.isRegister) {
     const acessedRegister = localStorage.getItem('accessRegister');
 
     if (!acessedRegister) {
@@ -126,7 +130,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.isLogin) {
     const accessedLogin = localStorage.getItem('accessLogin');
 
-    if(!accessedLogin) {
+    if (!accessedLogin) {
       next({ name: 'Login' });
       return;
     }

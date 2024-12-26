@@ -291,7 +291,7 @@ const continueHandler = async () => {
             // Fetch OTP for admin
             const response = await customFetch.post('/auth/login/generate-otp-code', {
                 email: AuthStore.currentUser.email,
-            });
+            }, { headers: { Authorization: `Bearer ${AuthStore.tokenUser}` } });
 
             if (response.status === 200) {
                 isAdminorOwner.value = true; // Proceed to admin/owner view

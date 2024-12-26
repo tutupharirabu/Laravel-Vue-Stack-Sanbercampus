@@ -323,6 +323,6 @@ const continueHandler = () => {
 };
 
 const redirectToDashboardAdminOwner = () => {
-    router.push('/dashboardAdminOwner'); // Redirect ke dashboard atau halaman lain
+    router.push('/dashboard'); // Redirect ke dashboard atau halaman lain
 };
 </script>
