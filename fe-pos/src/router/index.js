@@ -20,7 +20,7 @@ const router = createRouter({
         {
           path: 'product',
           name: 'ProductAdminOwner',
-          meta: { isOwner: true },
+          // meta: { isOwner: true },
           component: () => import('../views/Admin-Owner/Product.vue'),
         },
         {

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserRoleController;
 use App\Http\Controllers\API\BusinessDataController;
@@ -63,5 +64,13 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:api')->prefix('profile')->group(function () {
         Route::post('/', [ProfileController::class, 'updateOrCreate']);
         Route::get('/', [ProfileController::class, 'getProfile']);
+    });
+
+    // Product
+    Route::middleware('auth:api')->prefix('product')->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::post('/', [ProductController::class, 'store']);
+        Route::put('/{id}', [ProductController::class, 'update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy']);
     });
 });

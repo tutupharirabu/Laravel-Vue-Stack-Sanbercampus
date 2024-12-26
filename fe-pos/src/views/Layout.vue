@@ -1,7 +1,7 @@
 <template>
-    <div class="flex h-screen bg-base-100">
+    <div class="h-screen bg-base-200">
         <!-- Main Content -->
-        <div class="flex-grow flex flex-col transition-all duration-300">
+        <div>
             <!-- Header -->
             <Header />
 
