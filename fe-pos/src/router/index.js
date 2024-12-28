@@ -20,13 +20,19 @@ const router = createRouter({
         {
           path: 'product',
           name: 'ProductAdminOwner',
-          // meta: { isOwner: true },
-          component: () => import('../views/Admin-Owner/Product.vue'),
+          meta: { isOwner: true },
+          component: () => import('../views/Admin-Owner/Product/Product.vue'),
+        },
+        {
+          path: 'product-add',
+          name: 'ProductAdminOwner-AddProduct',
+          meta: { isOwner: true },
+          component: () => import('../views/Admin-Owner/Product/AddProduct.vue'),
         },
         {
           path: 'transactions',
-          name: 'TransactionsAdminOwner',
-          meta: { isOwner: true },
+          name: 'Transactions',
+          meta: { isAuth: true },
           component: () => import('../views/Admin-Owner/Transactions.vue'),
         },
         {
@@ -34,7 +40,31 @@ const router = createRouter({
           name: 'Cashier',
           meta: { isCashier: true },
           component: () => import('../views/Cashier/Cashier.vue'),
-        }
+        },
+        
+        // Setting
+        {
+          path: 'setting',
+          name: 'Setting',
+          component: () => import('../views/Setting.vue'),
+          meta: { isAuth: true },
+        },
+
+        // Profile
+        {
+          path: 'profile',
+          name: 'Profile',
+          component: () => import('../views/Profile.vue'),
+          meta: { isAuth: true },
+        },
+
+        // User Role
+        {
+          path: 'listUserRole',
+          name: 'UserRole',
+          component: () => import('../views/UserRole.vue'),
+          meta: { isAuth: true },
+        },
       ],
     },
     // Authentication Routes

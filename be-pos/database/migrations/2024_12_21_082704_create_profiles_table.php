@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('profile_id')->primary();
             $table->enum('gender', ['male', 'female']);
             $table->string('photo_profile')->nullable();
-            $table->uuid('user_id')->unique()->NotNull();
+            $table->uuid('user_id')->NotNull();
             $table->foreign('user_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->timestamps();
         });

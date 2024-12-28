@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserRoleController;
+use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\BusinessDataController;
 use App\Http\Controllers\API\ForgotPasswordController;
 
@@ -72,5 +73,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::put('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'destroy']);
+    });
+
+    // Transaction
+    Route::middleware('auth:api')->prefix('transaction')->group(function () {
+        Route::post('/pay', [TransactionController::class, 'Pay']);
     });
 });

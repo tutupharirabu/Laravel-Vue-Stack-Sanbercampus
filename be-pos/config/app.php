@@ -16,6 +16,14 @@ return [
     |
     */
 
+    'midtrans' => [
+        'is_production' => env('MIDTRANS_ENV', false),
+        'server_key' => env('MIDTRANS_SERVER_KEY', null),
+        'client_key' => env('MIDTRANS_CLIENT_KEY', null),
+        'sanitize' => env('MIDTRANS_SANITIZE', true),
+        'midtrans_3ds' => env('MIDTRANS_3DS', true),
+    ],
+
     'name' => env('APP_NAME', 'Laravel'),
 
     /*

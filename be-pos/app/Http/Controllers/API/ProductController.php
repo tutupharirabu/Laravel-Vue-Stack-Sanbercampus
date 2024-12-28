@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\Product;
 use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
@@ -14,11 +15,25 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['category', 'productVariants'])->get();
+        $products = Product::all();
+
+        // Transform the data to include only the category name
+        $transformedProducts = $products->map(function ($product) {
+            return [
+                'id' => $product->product_id,
+                'product_name' => $product->product_name,
+                'sku' => $product->sku,
+                'price' => $product->price,
+                'gender' => $product->gender,
+                'description' => $product->description,
+                'photo_product' => $product->photo_product,
+                'status' => $product->status,
+            ];
+        });
 
         return response()->json([
-            'message' => 'Products retrieved successfully.',
-            'data' => $products
+            'message' => 'Data produk berhasil diambil.',
+            'data' => $transformedProducts
         ], 200);
     }
 
@@ -39,17 +54,12 @@ class ProductController extends Controller
             'product_name' => 'required|string|max:255',
             'sku' => 'required|string|unique:products,sku|max:255',
             'price' => 'required|numeric|min:0',
-            'category_id' => 'required|uuid|exists:categories,category_id',
             'gender' => 'required|in:male,female,unisex',
             'description' => 'nullable|string',
-            'photo_product' => 'nullable|array',
-            'photo_product.*' => 'file|image|max:5120', // Maksimal 5MB per file
+            'photo_product' => 'nullable|array', // Validasi sebagai array
+            'photo_product.*' => 'file|image|max:5120|mimes:jpg,jpeg,png', // Validasi setiap file dalam array
             'status' => 'boolean',
-            'variants' => 'nullable|array',
-            'variants.*.color' => 'required_with:variants|string|max:50',
-            'variants.*.stock' => 'required_with:variants|integer|min:0',
-            'variants.*.sku' => 'required_with:variants|string|unique:product_variants,sku|max:255',
-            'variants.*.size_id' => 'required_with:variants|uuid|exists:sizes,size_id',
+            'stock' => 'required|integer|min:0',
         ]);
 
         // Upload foto ke Cloudinary
@@ -60,13 +70,13 @@ class ProductController extends Controller
                     $cloudinary = new Cloudinary();
                     $uploadedFileUrl = $cloudinary->uploadApi()->upload(
                         $photo->getRealPath(),
-                        [
-                            'folder' => 'web-pos/products',
-                        ]
+                        ['folder' => 'web-pos/products']
                     )['secure_url'];
 
+                    Log::info('Uploaded File URL:', ['url' => $uploadedFileUrl]);
                     $uploadedPhotos[] = $uploadedFileUrl;
                 } catch (\Exception $e) {
+                    Log::error('Error uploading to Cloudinary:', ['message' => $e->getMessage()]);
                     return response()->json([
                         'message' => 'Gagal mengunggah foto produk ke Cloudinary: ' . $e->getMessage(),
                     ], 500);
@@ -74,31 +84,29 @@ class ProductController extends Controller
             }
         }
 
+        if (empty($uploadedPhotos)) {
+            return response()->json([
+                'message' => 'Foto produk wajib diunggah.',
+            ], 400);
+        }
+
         try {
-            // Buat produk baru
             $product = Product::create(array_merge(
                 $request->only([
                     'product_name',
                     'sku',
                     'price',
-                    'category_id',
                     'gender',
                     'description',
                     'status',
+                    'stock',
                 ]),
-                ['photo_product' => json_encode($uploadedPhotos)] // Simpan sebagai JSON
+                ['photo_product' => json_encode($uploadedPhotos)] // Konversi array menjadi JSON
             ));
 
-            // Tambahkan varian jika ada
-            if ($request->has('variants') && is_array($request->variants)) {
-                foreach ($request->variants as $variant) {
-                    $product->productVariants()->create($variant);
-                }
-            }
-
             return response()->json([
-                'message' => 'Product created successfully.',
-                'data' => $product->load('productVariants') // Load relasi untuk respons
+                'message' => 'Produk berhasil dibuat.',
+                'data' => $product,
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -133,19 +141,14 @@ class ProductController extends Controller
 
         $request->validate([
             'product_name' => 'sometimes|string|max:255',
-            'sku' => 'sometimes|string|unique:products,sku,' . $product->id,
+            'sku' => 'sometimes|string|unique:products,sku,' . $product->product_id,
             'price' => 'sometimes|numeric|min:0',
-            'category_id' => 'sometimes|uuid|exists:categories,category_id',
             'gender' => 'sometimes|in:male,female,unisex',
             'description' => 'nullable|string',
             'photo_product' => 'nullable|array',
             'photo_product.*' => 'file|image|max:5120', // Maksimal 5MB per file
-            'status' => 'boolean',
-            'variants' => 'nullable|array',
-            'variants.*.color' => 'required_with:variants|string|max:50',
-            'variants.*.stock' => 'required_with:variants|integer|min:0',
-            'variants.*.sku' => 'required_with:variants|string|unique:product_variants,sku',
-            'variants.*.size_id' => 'required_with:variants|uuid|exists:sizes,size_id',
+            'status' => 'sometimes|boolean',
+            'stock' => 'sometimes|integer|min:0',
         ]);
 
         // Upload foto baru ke Cloudinary jika ada
@@ -181,24 +184,14 @@ class ProductController extends Controller
                     'gender',
                     'description',
                     'status',
+                    'stock',
                 ]),
                 ['photo_product' => json_encode($uploadedPhotos)] // Simpan sebagai JSON
             ));
 
-            // Update atau hapus varian jika ada
-            if ($request->has('variants') && is_array($request->variants)) {
-                // Hapus semua varian lama
-                $product->productVariants()->delete();
-
-                // Tambahkan varian baru
-                foreach ($request->variants as $variant) {
-                    $product->productVariants()->create($variant);
-                }
-            }
-
             return response()->json([
-                'message' => 'Product updated successfully.',
-                'data' => $product->load('productVariants'), // Load relasi untuk respons
+                'message' => 'Produk berhasil diperbarui.',
+                'data' => $product,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

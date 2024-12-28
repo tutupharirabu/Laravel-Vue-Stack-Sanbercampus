@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen bg-base-200">
+    <div class="bg-base-200">
         <!-- Main Content -->
         <div>
             <!-- Header -->

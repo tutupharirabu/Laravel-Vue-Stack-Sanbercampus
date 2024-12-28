@@ -19,14 +19,12 @@
 
             <!-- Navigation Links -->
             <nav class="flex space-x-6">
-                <nav class="flex space-x-6">
-                    <router-link v-for="(item, index) in filterNavItems" :key="index" :to="item.route"
-                        class="text-gray-700 font-medium hover:text-blue-500"
-                        :class="{ 'text-blue-600 border-b-2 border-blue-600 pb-1': active === item.name }"
-                        @click.prevent="setActive(item.name)">
-                        {{ item.name }}
-                    </router-link>
-                </nav>
+                <router-link v-for="(item, index) in filterNavItems" :key="index" :to="item.route"
+                    class="text-gray-700 font-medium hover:text-blue-500"
+                    :class="{ 'text-blue-600 border-b-2 border-blue-600 pb-1': active === item.name }"
+                    @click.prevent="setActive(item.name)">
+                    {{ item.name }}
+                </router-link>
             </nav>
         </div>
 
@@ -98,37 +96,36 @@ import { BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiC
 addIcons(BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiChevronRight);
 
 const AuthStore = useAuthStore();
-const currentUser = computed(() => AuthStore.currentUser); // Mengakses state `currentUser`
+const currentUser = computed(() => AuthStore.currentUser);
 const { logoutUser } = AuthStore;
 
-const profileImage = ref(''); // Path gambar profil, kosong untuk default
-const isProfileMenuOpen = ref(false); // Toggle untuk menu profil
-const profileDropdown = ref(null); // Referensi ke elemen dropdown
+const profileImage = ref('');
+const isProfileMenuOpen = ref(false);
+const profileDropdown = ref(null);
 
 import { listNav, active, setActive, initializeActive } from '@/utils/listNav'
 
 initializeActive(AuthStore.currentUser);
 
 const filterNavItems = computed(() => {
+    const role = currentUser.value?.role || null; // Fallback jika role belum tersedia
+
     return listNav.filter((item) => {
-        // Sembunyikan navigasi "Cashier" jika role bukan "Cashier"
-        if (item.name === "Cashier" && currentUser?.role !== "Cashier") {
-            return false;
+        if (role === "Cashier") {
+            // Hanya tampilkan "Cashier" dan "Transaction"
+            return item.name === "Cashier" || item.name === "Transactions";
+        } else if (role) {
+            // Tampilkan semua kecuali "Cashier"
+            return item.name !== "Cashier";
         }
-
-        // Sembunyikan navigasi selain "Cashier" jika role adalah "Cashier"
-        if (item.name !== "Cashier" && currentUser?.role === "Cashier") {
-            return false;
-        }
-
-        // Tampilkan semua navigasi lainnya
-        return true;
+        return false; // Tidak tampilkan apapun jika role belum tersedia
     });
 });
 
+console.log(filterNavItems.value)
+
 const filterProfileMenu = computed(() => {
     return listMenu.filter((menu) => {
-        // Menyembunyikan 'User Role' untuk Cashier
         if (menu.name === 'User Role' && currentUser.value.role === 'Cashier') {
             return false;
         }
@@ -144,19 +141,16 @@ const closeProfileMenu = () => {
     isProfileMenuOpen.value = false;
 };
 
-// Klik di luar dropdown untuk menutup
 const handleClickOutside = (event) => {
     if (profileDropdown.value && !profileDropdown.value.contains(event.target)) {
         closeProfileMenu();
     }
 };
 
-// Tambahkan event listener saat komponen dimuat
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
 });
 
-// Hapus event listener saat komponen dihancurkan
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleClickOutside);
 });

@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Category;
-use App\Models\ProductVariant;
+use App\Models\Transaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,16 +13,10 @@ class Product extends Model
 
     protected $primaryKey = 'product_id';
     protected $table = 'products';
-    protected $fillable = ['product_name', 'sku', 'status', 'price', 'gender', 'description', 'photo_product', 'category_id'];
+    protected $fillable = ['product_name', 'sku', 'status', 'price', 'gender', 'description', 'photo_product', 'stock'];
 
-    public function category()
+    public function transactions()
     {
-        return $this->belongsTo(Category::class, 'category_id');
+        return $this->belongsToMany(Transaction::class, 'transaction_details', 'product_id', 'transaction_id');
     }
-
-    public function productVariants()
-    {
-        return $this->hasMany(ProductVariant::class, 'product_id');
-    }
-
 }

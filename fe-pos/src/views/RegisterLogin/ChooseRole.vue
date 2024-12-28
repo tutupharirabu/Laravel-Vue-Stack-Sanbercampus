@@ -355,7 +355,9 @@ const submitVerification = async () => {
         );
 
         if (response.status === 200) {
-            router.push('/dashboard');
+            setTimeout(() => {
+                router.push('/dashboard');
+            }, 2000); // Delay 2 detik (2000 ms)
         }
     } catch (error) {
         otpError.value = true; // Aktifkan pesan error

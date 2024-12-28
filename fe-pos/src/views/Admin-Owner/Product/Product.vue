@@ -15,7 +15,7 @@
         <table class="w-full text-left text-sm">
             <thead class="bg-gray-100 text-gray-600 font-medium">
                 <tr>
-                    <th class="p-4"><input type="checkbox" v-model="selectAll" /></th>
+                    <th class="p-4"><input type="checkbox" v-model="selectAll" @change="toggleSelectAll" /></th>
                     <th class="p-4">PRODUCT</th>
                     <th class="p-4">CATEGORY</th>
                     <th class="p-4">STATUS</th>
@@ -24,7 +24,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50 border-t">
+                <tr v-for="product in paginatedProducts" :key="product.id" class="hover:bg-gray-50 border-t">
                     <td class="p-4">
                         <input type="checkbox" v-model="selectedProducts" :value="product.id" />
                     </td>
@@ -51,7 +51,7 @@
         <div class="p-4 flex justify-between items-center border-t">
             <span>{{ selectedProducts.length }} Products selected</span>
             <div class="flex items-center space-x-2">
-                <button v-for="page in totalPages" :key="page" @click="currentPage = page" :class="{
+                <button v-for="page in totalPages" :key="page" @click="changePage(page)" :class="{
                     'bg-blue-600 text-white px-3 py-1 rounded-lg': currentPage === page,
                     'bg-gray-100 text-gray-600 px-3 py-1 rounded-lg hover:bg-gray-200': currentPage !== page,
                 }">
@@ -75,20 +75,72 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useAuthStore } from '@/stores/Auth';
+import customFetch from '@/utils/customFetch';
+
 import { addIcons } from "oh-vue-icons";
 import { IoAddCircle } from "oh-vue-icons/icons";
 
 addIcons(IoAddCircle);
 
 // States
-const products = ref([]); // Simulate product data or fetch from API
+const AuthStore = useAuthStore();
+const products = ref([]);
 const selectedProducts = ref([]);
 const selectAll = ref(false);
 const currentPage = ref(1);
-const totalPages = 5; // Assume pagination
-</script>
+const perPage = 5; // Number of items per page
+const totalPages = computed(() => Math.ceil(products.value.length / perPage));
 
-<style>
-/* Add your custom styles here */
-</style>
+// Computed: Paginated products
+const paginatedProducts = computed(() => {
+    const start = (currentPage.value - 1) * perPage;
+    return products.value.slice(start, start + perPage);
+});
+
+// Methods
+const fetchData = async () => {
+    try {
+        // Make the API call using customFetch
+        const response = await customFetch.get('/product', {
+            headers: { Authorization: `Bearer ${AuthStore.tokenUser}` },
+        });
+
+        // Log the response to inspect its structure
+        console.log('API Response:', response);
+
+        // Ensure the response contains a `data` property that can be iterated
+        if (response?.data?.data) {
+            products.value = response.data.data.map(product => ({
+                id: product.id,
+                name: product.product_name,
+                image: product.photo_product?.[0] || '/placeholder-image.png',
+                category: product.category?.category_name || 'Uncategorized', 
+                status: product.status ? 'Active' : 'Draft',
+                stock: product.productVariants?.reduce((sum, variant) => sum + variant.stock, 0) || 0,
+                price: product.price,
+            }));
+        } else {
+            console.error('Unexpected response structure:', response);
+        }
+    } catch (error) {
+        console.error('Failed to fetch products:', error);
+    }
+};
+
+const toggleSelectAll = () => {
+    if (selectAll.value) {
+        selectedProducts.value = products.value.map(product => product.id);
+    } else {
+        selectedProducts.value = [];
+    }
+};
+
+const changePage = (page) => {
+    currentPage.value = page;
+};
+
+// Lifecycle Hook
+onMounted(fetchData);
+</script>

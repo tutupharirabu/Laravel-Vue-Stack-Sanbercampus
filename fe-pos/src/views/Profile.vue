@@ -1,5 +1,5 @@
 <template>
     <div>
-        <p>Ini Setting</p>
+        <p>Ini Profile</p>
     </div>
 </template>
