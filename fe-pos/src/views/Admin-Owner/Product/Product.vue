@@ -83,7 +83,7 @@
 
     <!-- Empty State -->
     <div v-else class="text-center py-10 bg-white shadow-md rounded-lg">
-        <img src="@/assets/No-Product.png" alt="Empty State" class="mx-auto mb-4 w-48 h-auto" />
+        <img src="https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478372/web-pos/Image/rkuh6yklgjxm0c7u6kxk.png" alt="Empty State" class="mx-auto mb-4 w-48 h-auto" />
         <h3 class="text-lg font-semibold text-gray-800">You don’t have any product yet</h3>
         <p class="text-sm text-gray-600 mb-4">
             Add your first product and enjoy smooth transaction experience by pressing the button below.

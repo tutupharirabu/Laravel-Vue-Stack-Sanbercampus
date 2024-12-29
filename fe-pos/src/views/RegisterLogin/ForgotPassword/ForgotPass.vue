@@ -29,7 +29,7 @@
         <!-- Right Section - Success Change Password -->
         <div v-if="isChange" class="w-full md:w-1/2 p-8 flex flex-col items-center">
             <!-- Illustration -->
-            <img src="@/assets/Change-New-Password.png" alt="Password Changed" class="w-1/2 max-w-xs mb-8" />
+            <img src="https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478372/web-pos/Image/b2ayt2fazarztt2csmps.png" alt="Password Changed" class="w-1/2 max-w-xs mb-8" />
 
             <!-- Heading -->
             <h1 class="text-2xl font-bold mb-4 text-center">Successfully changed password</h1>
@@ -204,16 +204,16 @@ const redirectToLogin = () => {
 const currentSlide = ref(0);
 const slides = [
     {
-        image: 'src/assets/Image/Image-01.png',
-        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.',
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/h2hiijgbuvgw1el3g8pi.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-02.png',
-        quote: 'Explore new horizons, one step at a time.',
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/i6z52tpfg9p3hib11ym9.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-03.png',
-        quote: 'Innovation is the key to success.',
-    },
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478347/web-pos/Image/pkhhx2itqmnxcqa7etdx.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
+    }
 ];
 </script>

@@ -148,7 +148,7 @@
 
         <div v-else-if="isSuccessBusiness" class="w-full md:w-1/2 p-8">
             <!-- Success Icon -->
-            <img src="@/assets/Change-Data-Success.png" alt="Success Icon" class="w-40 mx-auto mb-8" />
+            <img src="https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478372/web-pos/Image/silcakltwpywfvqtfmaz.png" alt="Success Icon" class="w-40 mx-auto mb-8" />
 
             <!-- Success Message -->
             <h1 class="text-2xl font-bold mb-4">
@@ -297,17 +297,17 @@ const submitForm = async () => {
 const currentSlide = ref(0);
 const slides = [
     {
-        image: 'src/assets/Image/Image-01.png',
-        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.',
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/h2hiijgbuvgw1el3g8pi.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-02.png',
-        quote: 'Explore new horizons, one step at a time.',
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/i6z52tpfg9p3hib11ym9.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-03.png',
-        quote: 'Innovation is the key to success.',
-    },
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478347/web-pos/Image/pkhhx2itqmnxcqa7etdx.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
+    }
 ];
 
 const selectedOption = ref('');

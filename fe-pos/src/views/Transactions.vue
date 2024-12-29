@@ -57,7 +57,7 @@
             <!-- Empty State -->
             <div v-else class="py-16 flex flex-col items-center justify-center text-center">
                 <div class="w-32 h-32 mb-6">
-                    <img src="../assets/No-Transaction.png" alt="Empty state" class="w-full h-full" />
+                    <img src="https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478372/web-pos/Image/k6osmkwhtwgtpezhhbmy.png" alt="Empty state" class="w-full h-full" />
                 </div>
                 <h3 class="text-lg font-medium text-gray-900 mb-1">You don't have any transactions</h3>
                 <p class="text-sm text-gray-500">You have not received any transactions from your customers.</p>

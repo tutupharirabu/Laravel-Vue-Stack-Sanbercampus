@@ -28,7 +28,7 @@
 
         <!-- Right Section After OTP Code Success -->
         <div  v-if="isSuccess" class="w-full md:w-1/2 p-8">
-            <img src="@/assets/Register-Success.png" alt="Success Illustration" class="w-40 mx-auto mb-8" />
+            <img src="https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478796/web-pos/Image/p1vqfcps4egozdcfienh.png" alt="Success Illustration" class="w-40 mx-auto mb-8" />
             <h1 class="text-2xl font-bold mb-4">Successfully registered</h1>
             <p class="text-gray-600 mb-8">
                 You have successfully registered. Click the button below to continue using the app.
@@ -126,17 +126,17 @@ const successMessage = ref(''); // Pesan sukses untuk toast
 const currentSlide = ref(0);
 const slides = [
     {
-        image: 'src/assets/Image/Image-01.png',
-        quote: "Fashion is like eating, you shouldn't stick to the same menu.",
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/h2hiijgbuvgw1el3g8pi.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-02.png',
-        quote: "Explore new horizons, one step at a time.",
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478349/web-pos/Image/i6z52tpfg9p3hib11ym9.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
     },
     {
-        image: 'src/assets/Image/Image-03.png',
-        quote: "Innovation is the key to success.",
-    },
+        image: 'https://res.cloudinary.com/dasfdo5kq/image/upload/v1735478347/web-pos/Image/pkhhx2itqmnxcqa7etdx.png',
+        quote: 'Fashion is like eating, you shouldn\'t stick to the same menu.'
+    }
 ];
 
 // Handle OTP Input
