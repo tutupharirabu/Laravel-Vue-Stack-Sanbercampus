@@ -6,13 +6,18 @@ import Layout from '@/views/Layout.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    // Dashboard Owner/Admin Routes
     {
       path: '/',
+      redirect: '/login',
+    },
+    
+    // Dashboard Owner/Admin Routes
+    {
+      path: '/dashboard',
       component: Layout,
       children: [
         {
-          path: 'dashboard',
+          path: '',
           name: 'DashboardAdminOwner',
           meta: { isOwner: true },
           component: () => import('../views/Admin-Owner/Dashboard.vue'),

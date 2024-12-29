@@ -265,7 +265,7 @@ const changePage = (page) => {
 };
 
 const addProduct = () => {
-    router.push('/product-add');
+    router.push('/dashboard/product-add');
 };
 
 const editProduct = (id) => {

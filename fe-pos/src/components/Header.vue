@@ -48,7 +48,7 @@
                             <h3 class="font-semibold text-gray-800">{{ currentUser.name || 'Unknown User' }}</h3>
                             <p class="text-sm text-gray-500">{{ currentUser.role || 'No Role Assigned' }}</p>
                         </div>
-                        <router-link to="/profile" class="text-gray-500 hover:text-gray-700">
+                        <router-link to="/dashboard/profile" class="text-gray-500 hover:text-gray-700">
                             <v-icon name="bi-chevron-right" class="h-5 w-5" />
                         </router-link>
                     </div>
@@ -65,7 +65,7 @@
                         </div>
 
                         <!-- Setting -->
-                        <router-link to="/setting"
+                        <router-link to="/dashboard/setting"
                             class="flex items-center px-4 py-2 mt-2 hover:bg-gray-100 text-gray-700">
                             <v-icon name="bi-gear" class="h-5 w-5 mr-3" />
                             Setting

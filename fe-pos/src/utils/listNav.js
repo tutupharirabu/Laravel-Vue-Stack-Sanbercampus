@@ -5,9 +5,9 @@ export const active = ref(''); // State aktif untuk navigasi
 // List navigasi
 export const listNav = [
     { name: 'Dashboard', route: '/dashboard' },
-    { name: 'Cashier', route: '/cashier' },
-    { name: 'Product', route: '/product' },
-    { name: 'Transactions', route: '/transactions' },
+    { name: 'Cashier', route: '/dashboard/cashier' },
+    { name: 'Product', route: '/dashboard/product' },
+    { name: 'Transactions', route: '/dashboard/transactions' },
 ];
 
 // Fungsi untuk mengatur link aktif

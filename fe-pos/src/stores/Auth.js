@@ -33,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
             if (currentUser.value.role === 'Owner') {
                 router.push('/chooseRole');
             } else {
-                router.push('/cashier'); // Redirect ke dashboard cashier
+                router.push('/dashboard/cashier'); // Redirect ke dashboard cashier
             }
         } catch (error) {
             isError.value = true;

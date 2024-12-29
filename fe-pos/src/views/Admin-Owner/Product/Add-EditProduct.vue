@@ -230,7 +230,7 @@ const fetchProductForEdit = async () => {
     } catch (error) {
         console.error('Error fetching product:', error)
         alert('Product not found')
-        router.push('/product')
+        router.push('/dashboard/product')
     } finally {
         loading.value = false
     }
@@ -269,7 +269,7 @@ const submitForm = async () => {
             alert('Product added successfully!')
         }
 
-        router.push('/products')
+        router.push('/dashboard/product')
     } catch (error) {
         console.error('Error submitting form:', error)
         alert('An error occurred. Please try again.')
@@ -277,7 +277,7 @@ const submitForm = async () => {
 }
 
 const cancel = () => {
-    router.push('/product')
+    router.push('/dashboard/product')
 }
 
 onMounted(() => {
