@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('transaction_id')->primary();
             $table->uuid('customer_id')->NotNull();
             $table->uuid('cashier_id')->NotNull();
-            $table->foreign('customer_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->foreign('customer_id')->references('customer_id')->on('customers')->cascadeOnDelete();
             $table->foreign('cashier_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->boolean('status');
             $table->decimal('amount', 15, 2)->NotNull();

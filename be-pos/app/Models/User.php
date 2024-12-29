@@ -79,10 +79,6 @@ class User extends Authenticable implements JWTSubject
         return $this->belongsTo(Business::class, 'business_id');
     }
 
-    public function customer() {
-        return $this->hasOne(Transaction::class, 'customer_id');
-    }
-
     public function cashier() {
         return $this->hasOne(Transaction::class, 'cashier_id');
     }

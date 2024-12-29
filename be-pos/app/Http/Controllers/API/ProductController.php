@@ -206,6 +206,23 @@ class ProductController extends Controller
         }
     }
 
+    public function reduceQuantity(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $product = Product::findOrFail($id);
+        if ($product->stock < $validated['quantity']) {
+            return response()->json(['message' => 'Not enough stock available'], 400);
+        }
+
+        $product->stock -= $validated['quantity'];
+        $product->save();
+
+        return response()->json(['message' => 'Stock updated successfully'], 200);
+    }
+
     /**
      * Remove the specified resource from storage.
      */

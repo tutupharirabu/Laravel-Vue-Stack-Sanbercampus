@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\CustomerController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\UserRoleController;
@@ -53,8 +54,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('verifyPasswordResetToken');
     });
 
-    // Role - Jangan lupa tambahin middleware isOwner
-    Route::middleware('auth:api')->prefix('userRole')->group(function () {
+    // Role
+    Route::middleware(['auth:api', 'isOwner'])->prefix('userRole')->group(function () {
         Route::get('/', [UserRoleController::class, 'index']);
         Route::post('/', [UserRoleController::class, 'store']);
         Route::get('/{id}', [UserRoleController::class, 'show']);
@@ -68,17 +69,29 @@ Route::prefix('v1')->group(function () {
         Route::get('/', [ProfileController::class, 'getProfile']);
     });
 
-    // Product - Jangan lupa tambahin middleware isOwner
+    // Product
     Route::middleware('auth:api')->prefix('product')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/', [ProductController::class, 'store']);
         Route::get('/{id}', [ProductController::class, 'show']);
         Route::put('/{id}', [ProductController::class, 'update']);
+        Route::put('/reduce-quantity/{id}', [ProductController::class, 'reduceQuantity']);
         Route::delete('/', [ProductController::class, 'bulkDestroy']);
     });
 
     // Transaction
     Route::middleware('auth:api')->prefix('transaction')->group(function () {
-        Route::post('/pay', [TransactionController::class, 'Pay']);
+        Route::get('/', [TransactionController::class, 'index']);
+        Route::post('/pay', [TransactionController::class, 'pay']);
+        Route::post('/save', [TransactionController::class, 'save']);
+    });
+
+    // Customer
+    Route::middleware(['auth:api'])->prefix('customer')->group(function () {
+        Route::get('/', [CustomerController::class, 'index']);
+        Route::post('/', [CustomerController::class, 'store']);
+        Route::get('/{id}', [CustomerController::class, 'show']);
+        Route::put('/{id}', [CustomerController::class, 'update']);
+        Route::delete('/{id}', [CustomerController::class, 'destroy']);
     });
 });

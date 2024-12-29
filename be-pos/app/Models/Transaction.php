@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Customer;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
@@ -14,16 +15,17 @@ class Transaction extends Model
     protected $table = 'transactions';
 
     protected $fillable = [
-        'user_id',
+        'transaction_id',
+        'customer_id',
         'cashier_id',
         'status',
         'amount',
         'items',
     ];
 
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
     }
 
     public function cashier()

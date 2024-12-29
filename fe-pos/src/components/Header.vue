@@ -111,25 +111,25 @@ const filterNavItems = computed(() => {
     const role = currentUser.value?.role || null; // Fallback jika role belum tersedia
 
     return listNav.filter((item) => {
-        // if (role === "Cashier") {
-        //     // Hanya tampilkan "Cashier" dan "Transaction"
-        //     return item.name === "Cashier" || item.name === "Transactions";
-        // } else if (role) {
-        //     // Tampilkan semua kecuali "Cashier"
-        //     return item.name !== "Cashier";
-        // }
-        return true; // Default nya false ya :)
+        if (role === "Cashier") {
+            // Hanya tampilkan "Cashier" dan "Transaction"
+            return item.name === "Cashier" || item.name === "Transactions";
+        } else if (role) {
+            // Tampilkan semua kecuali "Cashier"
+            return item.name !== "Cashier";
+        }
+        return false; // Default nya false ya :)
     });
 });
 
-console.log(filterNavItems.value)
-
 const filterProfileMenu = computed(() => {
+    const role = currentUser.value?.role || null; // Fallback jika role belum tersedia
+
     return listMenu.filter((menu) => {
-        // if (menu.name === 'User Role' && currentUser.value.role === 'Cashier') {
-        //     return false;
-        // }
-        return true;
+        if (role !== "Cashier") {
+            return menu.name === "User Role" || menu.name === "Customer"
+        }
+        return false;
     });
 });
 

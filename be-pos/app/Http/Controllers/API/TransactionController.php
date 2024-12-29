@@ -4,12 +4,33 @@ namespace App\Http\Controllers\API;
 
 use Midtrans\Snap;
 use Midtrans\Config;
+use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class TransactionController extends Controller
 {
+
+    public function index()
+    {
+        try {
+            $transactions = Transaction::with(['customer', 'cashier'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'message' => 'Transactions retrieved successfully.',
+                'data' => $transactions,
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retrieve transactions.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function pay(Request $request)
     {
         try {
@@ -64,6 +85,40 @@ class TransactionController extends Controller
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function save(Request $request)
+    {
+        $validatedData = $request->validate([
+            'transaction_id' => 'required|uuid',
+            'customer_id' => 'required|uuid|exists:customers,customer_id',
+            'cashier_id' => 'required|uuid|exists:users,user_id',
+            'amount' => 'required|numeric',
+            'items' => 'required|json',
+            'status' => 'required|boolean',
+        ]);
+
+        try {
+            // Simpan transaksi ke database
+            $transaction = Transaction::create([
+                'transaction_id' => $validatedData['transaction_id'],
+                'customer_id' => $validatedData['customer_id'],
+                'cashier_id' => $validatedData['cashier_id'],
+                'amount' => $validatedData['amount'],
+                'items' => $validatedData['items'],
+                'status' => $validatedData['status'],
+            ]);
+
+            return response()->json([
+                'message' => 'Transaction saved successfully.',
+                'transaction' => $transaction,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to save transaction.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
