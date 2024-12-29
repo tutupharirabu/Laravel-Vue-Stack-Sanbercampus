@@ -39,7 +39,7 @@ const router = createRouter({
           path: 'transactions',
           name: 'Transactions',
           meta: { isAuth: true },
-          component: () => import('../views/Admin-Owner/Transactions.vue'),
+          component: () => import('../views/Transactions.vue'),
         },
         {
           path: 'cashier',
@@ -68,7 +68,13 @@ const router = createRouter({
         {
           path: 'listUserRole',
           name: 'UserRole',
-          component: () => import('../views/UserRole.vue'),
+          component: () => import('../views/Admin-Owner/UserRole.vue'),
+          meta: { isAuth: true },
+        },
+        {
+          path: 'customer',
+          name: 'Customer',
+          component: () => import('../views/Admin-Owner/Customer.vue'),
           meta: { isAuth: true },
         },
       ],

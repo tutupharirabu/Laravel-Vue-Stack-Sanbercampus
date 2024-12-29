@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRoleController extends Controller
 {
@@ -69,8 +70,17 @@ class UserRoleController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|unique:users,phone_number',
             'password' => 'required|min:6',
-            'role_id' => 'required|exists:roles,role_id',
+            'role_name' => 'required|in:owner,admin,cashier', // Validasi role_name
         ]);
+
+        // Dapatkan role_id berdasarkan role_name
+        $role = Role::where('role_name', $request->role_name)->first();
+
+        if (!$role) {
+            return response()->json([
+                'message' => 'Role yang dipilih tidak valid.',
+            ], 422);
+        }
 
         // Buat user baru
         $user = User::create([
@@ -78,24 +88,23 @@ class UserRoleController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
-            'role_id' => $request->role_id,
+            'role_id' => $role->role_id,
             'business_id' => $currentUser->business_id,
         ]);
 
-        // Response sukses
         return response()->json([
-            'message' => 'Pengguna berhasil ditambahkan.'
+            'message' => 'Pengguna berhasil ditambahkan.',
+            'data' => $user
         ], 201);
     }
 
-
     /**
-     * Update the specified resource in storage.
+     * Display the specified resource.
      */
-    public function update(Request $request, $id)
+    public function show($id)
     {
         // Ambil pengguna berdasarkan ID
-        $user = User::find($id);
+        $user = User::with('role')->findOrFail($id);
 
         // Cek apakah user ditemukan
         if (!$user) {
@@ -104,52 +113,90 @@ class UserRoleController extends Controller
             ], 404);
         }
 
-        // Validasi input
-        $request->validate([
-            'full_name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $id . ',user_id', // Validasi unik untuk email, kecuali pengguna ini
-            'phone_number' => 'sometimes|unique:users,phone_number,' . $id . ',user_id', // Validasi unik untuk nomor telepon
-            'password' => 'nullable|min:6', // Password opsional
-            'role_id' => 'sometimes|exists:roles,role_id', // Validasi role ID
-        ]);
-
-        // Perbarui data pengguna
-        $user->update([
-            'full_name' => $request->full_name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'password' => $request->password ? Hash::make($request->password) : $user->password, // Jika password diisi, hash password baru
-            'role_id' => $request->role_id,
-        ]);
-
-        // Response sukses
         return response()->json([
-            'message' => 'Data Pengguna berhasil diperbarui.'
+            'message' => 'Data Pengguna berhasil diambil.',
+            'data' => $user,
         ], 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $id)
+    {
+        try {
+            // Ambil pengguna berdasarkan ID
+            $user = User::findOrFail($id);
+
+            // Validasi input
+            $request->validate([
+                'full_name' => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|unique:users,email,' . $id . ',user_id',
+                'phone_number' => 'sometimes|unique:users,phone_number,' . $id . ',user_id',
+                'password' => 'nullable|min:6',
+                'role_name' => 'sometimes|in:owner,admin,cashier', // Validasi role_name
+            ]);
+
+            // Siapkan data untuk update
+            $updateData = [
+                'full_name' => $request->full_name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+            ];
+
+            // Update password jika ada
+            if ($request->filled('password')) {
+                $updateData['password'] = Hash::make($request->password);
+            }
+
+            // Update role jika ada
+            if ($request->filled('role_name')) {
+                $role = Role::where('role_name', $request->role_name)->first();
+                if (!$role) {
+                    return response()->json([
+                        'message' => 'Role yang dipilih tidak valid.',
+                    ], 422);
+                }
+                $updateData['role_id'] = $role->role_id;
+            }
+
+            // Perbarui data pengguna
+            $user->update($updateData);
+
+            return response()->json([
+                'message' => 'Data Pengguna berhasil diperbarui.',
+                'data' => $user
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Pengguna tidak ditemukan.',
+            ], 404);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function bulkDestroy(Request $request)
     {
-        // Cari pengguna berdasarkan ID
-        $user = User::find($id);
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'uuid|exists:users,user_id',
+        ]);
 
-        // Jika pengguna tidak ditemukan
-        if (!$user) {
+        try {
+            User::whereIn('user_id', $request->ids)->delete();
+
             return response()->json([
-                'message' => 'Pengguna tidak ditemukan.',
-            ], 404);
+                'message' => 'Users deleted successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete products.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        // Hapus pengguna
-        $user->delete();
-
-        // Respons sukses
-        return response()->json([
-            'message' => 'Pengguna berhasil dihapus.',
-        ], 200);
     }
 
 }

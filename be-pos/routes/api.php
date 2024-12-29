@@ -53,12 +53,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->middleware('verifyPasswordResetToken');
     });
 
-    // Role
-    Route::middleware(['auth:api', 'isOwner'])->prefix('userRole')->group(function () {
+    // Role - Jangan lupa tambahin middleware isOwner
+    Route::middleware('auth:api')->prefix('userRole')->group(function () {
         Route::get('/', [UserRoleController::class, 'index']);
         Route::post('/', [UserRoleController::class, 'store']);
+        Route::get('/{id}', [UserRoleController::class, 'show']);
         Route::put('/{id}', [UserRoleController::class, 'update']);
-        Route::delete('/{id}', [UserRoleController::class, 'destroy']);
+        Route::delete('/', [UserRoleController::class, 'bulkDestroy']);
     });
 
     // Profile
@@ -67,7 +68,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/', [ProfileController::class, 'getProfile']);
     });
 
-    // Product
+    // Product - Jangan lupa tambahin middleware isOwner
     Route::middleware('auth:api')->prefix('product')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/', [ProductController::class, 'store']);

@@ -91,9 +91,9 @@ import { useAuthStore } from "@/stores/Auth";
 import { listMenu } from '@/utils/listMenu.js';
 
 import { addIcons } from 'oh-vue-icons';
-import { BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiChevronRight } from 'oh-vue-icons/icons';
+import { BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiChevronRight, BiPersonCheckFill } from 'oh-vue-icons/icons';
 
-addIcons(BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiChevronRight);
+addIcons(BiShop, BiSearch, BiPerson, BiGear, BiBoxArrowLeft, BiPersonCircle, BiChevronRight, BiPersonCheckFill);
 
 const AuthStore = useAuthStore();
 const currentUser = computed(() => AuthStore.currentUser);
@@ -126,9 +126,9 @@ console.log(filterNavItems.value)
 
 const filterProfileMenu = computed(() => {
     return listMenu.filter((menu) => {
-        if (menu.name === 'User Role' && currentUser.value.role === 'Cashier') {
-            return false;
-        }
+        // if (menu.name === 'User Role' && currentUser.value.role === 'Cashier') {
+        //     return false;
+        // }
         return true;
     });
 });

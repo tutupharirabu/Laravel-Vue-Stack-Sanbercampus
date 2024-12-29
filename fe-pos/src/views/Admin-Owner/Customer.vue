@@ -1,5 +1,5 @@
 <template>
     <div>
-        <p>Ini User Role</p>
+        <p>Ini Customer</p>
     </div>
 </template>
