@@ -36,8 +36,8 @@
                         <div class="col-span-2">
                             <div class="flex space-x-2">
                                 <div v-for="(item, index) in transaction.items" :key="index" class="relative">
-                                    <img :src="item.product?.product_photo || 'https://placehold.co/600x400'"
-                                        :alt="item.value.name" class="w-16 h-16 rounded-md object-cover" />
+                                    <img :src="item.product_photo || 'https://placehold.co/600x400'"
+                                        :alt="item.name" class="w-16 h-16 rounded-md object-cover" />
                                 </div>
                             </div>
                         </div>
@@ -120,7 +120,7 @@ const fetchTransactions = async () => {
                 created_at: transaction.created_at,
             }));
 
-            console.log('Response data:', transactions.value);
+            // console.log('Response data:', transactions.value);
         } else {
             error.value = response.data.message || 'Failed to fetch transactions.';
         }
