@@ -28,6 +28,7 @@ class ProductController extends Controller
                 'description' => $product->description,
                 'photo_product' => $product->photo_product,
                 'status' => $product->status,
+                'stock' => $product->stock,
             ];
         });
 
@@ -73,7 +74,6 @@ class ProductController extends Controller
                         ['folder' => 'web-pos/products']
                     )['secure_url'];
 
-                    Log::info('Uploaded File URL:', ['url' => $uploadedFileUrl]);
                     $uploadedPhotos[] = $uploadedFileUrl;
                 } catch (\Exception $e) {
                     Log::error('Error uploading to Cloudinary:', ['message' => $e->getMessage()]);
@@ -82,12 +82,6 @@ class ProductController extends Controller
                     ], 500);
                 }
             }
-        }
-
-        if (empty($uploadedPhotos)) {
-            return response()->json([
-                'message' => 'Foto produk wajib diunggah.',
-            ], 400);
         }
 
         try {
@@ -121,7 +115,18 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $showData = Product::findOrFail($id);
+
+        if (!$showData) {
+            return response()->json([
+                'message' => 'Data produk tidak ditemukan.',
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'Data produk berhasil diambil.',
+                'data' => $showData,
+            ], 200);
+        }
     }
 
     /**
@@ -204,14 +209,24 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function bulkDestroy(Request $request)
     {
-        $product = Product::findOrFail($id);
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'uuid|exists:products,product_id', // Validasi UUID dan keberadaan ID di database
+        ]);
 
-        $product->delete();
+        try {
+            Product::whereIn('product_id', $request->ids)->delete();
 
-        return response()->json([
-            'message' => 'Product deleted successfully.'
-        ], 200);
+            return response()->json([
+                'message' => 'Products deleted successfully.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to delete products.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

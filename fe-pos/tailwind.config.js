@@ -61,9 +61,9 @@ export default {
           "info-surface": "#CCE0FF",     // Surface color
           "info-border": "#2A7FFF",      // Border color
 
-          "base-100": "#FFFFFF",         // Background base
-          "base-200": "#F4F5F6",         // Slightly darker background
-          "base-300": "#E5E7EB",         // Even darker background
+          "base-100": "#F4F5F6",         // Background base
+          "base-200": "#E5E7EB",         // Slightly darker background
+          "base-300": "#D3D6DA",         // Even darker background
           "base-content": "#101623",     // Text/content color
         },
       },

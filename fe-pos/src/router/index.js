@@ -20,14 +20,20 @@ const router = createRouter({
         {
           path: 'product',
           name: 'ProductAdminOwner',
-          meta: { isOwner: true },
+          meta: { isAuth: true }, // Jangan lupa diganti jadi isOwner nanti ya :)
           component: () => import('../views/Admin-Owner/Product/Product.vue'),
         },
         {
           path: 'product-add',
           name: 'ProductAdminOwner-AddProduct',
-          meta: { isOwner: true },
-          component: () => import('../views/Admin-Owner/Product/AddProduct.vue'),
+          meta: { isAuth: true }, // Jangan lupa diganti jadi isOwner nanti ya :)
+          component: () => import('../views/Admin-Owner/Product/Add-EditProduct.vue'),
+        },
+        {
+          path: 'product-edit/:id',
+          name: 'ProductAdminOwner-EditProduct',
+          meta: { isAuth: true }, // Jangan lupa diganti jadi isOwner nanti ya :)
+          component: () => import('../views/Admin-Owner/Product/Add-EditProduct.vue'),
         },
         {
           path: 'transactions',

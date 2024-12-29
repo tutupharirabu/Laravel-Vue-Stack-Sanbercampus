@@ -111,14 +111,14 @@ const filterNavItems = computed(() => {
     const role = currentUser.value?.role || null; // Fallback jika role belum tersedia
 
     return listNav.filter((item) => {
-        if (role === "Cashier") {
-            // Hanya tampilkan "Cashier" dan "Transaction"
-            return item.name === "Cashier" || item.name === "Transactions";
-        } else if (role) {
-            // Tampilkan semua kecuali "Cashier"
-            return item.name !== "Cashier";
-        }
-        return false; // Tidak tampilkan apapun jika role belum tersedia
+        // if (role === "Cashier") {
+        //     // Hanya tampilkan "Cashier" dan "Transaction"
+        //     return item.name === "Cashier" || item.name === "Transactions";
+        // } else if (role) {
+        //     // Tampilkan semua kecuali "Cashier"
+        //     return item.name !== "Cashier";
+        // }
+        return true; // Default nya false ya :)
     });
 });
 
